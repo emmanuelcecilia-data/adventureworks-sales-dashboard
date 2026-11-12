@@ -1,0 +1,611 @@
+table Sales
+	lineageTag: 28101f1b-a04b-46dc-b46e-3242c7239dc6
+
+	measure 'Total Sales' = SUM ( Sales[Sales Amount] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 1. Sales
+		lineageTag: bf0f1648-b93f-49ae-a1ae-2b79ac4bfb6f
+
+	measure 'Total Cost' = SUM ( Sales[Total Product Cost] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 1. Sales
+		lineageTag: 4e856fdc-1e3a-440a-ae4f-8e120fb4ec13
+
+	measure Profit = [Total Sales] - [Total Cost]
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 1. Sales
+		lineageTag: bba75f76-dd79-47ff-b6ad-dd811fe73985
+
+	measure 'Profit Margin %' = DIVIDE ( [Profit], [Total Sales] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 1. Sales
+		lineageTag: f9eba5d7-fbc6-4576-908b-634ab79d2dd2
+
+	measure 'Total Quantity' = SUM ( Sales[Order Quantity] )
+		formatString: #,0
+		displayFolder: 1. Sales
+		lineageTag: 9f0f1994-8eb1-4bd4-973a-8ba1481750fe
+
+	measure 'Total Orders' = DISTINCTCOUNT ( Sales[Sales Order] )
+		formatString: #,0
+		displayFolder: 1. Sales
+		lineageTag: 2a3463fc-5657-4164-850b-96b67d413080
+
+	measure 'Order Lines' = COUNTROWS ( Sales )
+		formatString: #,0
+		displayFolder: 1. Sales
+		lineageTag: b0f62850-f823-4f6c-86f5-23bca430b8f6
+
+	measure 'Avg Order Value' = DIVIDE ( [Total Sales], [Total Orders] )
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: 1. Sales
+		lineageTag: ef84d8e8-935d-41c2-adcd-366bc58e1165
+
+	measure 'Avg Selling Price' = DIVIDE ( [Total Sales], [Total Quantity] )
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: 1. Sales
+		lineageTag: 2cebb1d7-d0ce-4568-a911-ac90e3b1e679
+
+	measure Customers = CALCULATE ( DISTINCTCOUNT ( Sales[CustomerKey] ), KEEPFILTERS ( Sales[CustomerKey] <> -1 ) )
+		formatString: #,0
+		displayFolder: 2. Customers & Products
+		lineageTag: 47ae21b8-5ca4-4b91-a786-966402300a78
+
+	measure 'Active Resellers' = CALCULATE ( DISTINCTCOUNT ( Sales[ResellerKey] ), KEEPFILTERS ( Sales[ResellerKey] <> -1 ) )
+		formatString: #,0
+		displayFolder: 2. Customers & Products
+		lineageTag: 701ed36f-c896-4e5d-995c-108ea34335e3
+
+	measure 'Products Sold' = DISTINCTCOUNT ( Sales[ProductKey] )
+		formatString: #,0
+		displayFolder: 2. Customers & Products
+		lineageTag: 905eb886-2862-46b5-9d56-f8240a5294f5
+
+	measure 'Product Sales Rank' =
+			IF (
+			    ISINSCOPE ( Product[Product] ),
+			    RANKX ( ALLSELECTED ( Product[Product] ), [Total Sales], , DESC, DENSE )
+			)
+		formatString: 0
+		displayFolder: 2. Customers & Products
+		lineageTag: 0578f1ff-be56-42ed-853c-02bb8d74aeae
+
+	measure 'Internet Sales' = CALCULATE ( [Total Sales], KEEPFILTERS ( Sales[Channel] = "Internet" ) )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 3. Channel
+		lineageTag: caa58785-535e-479e-8802-bc18bf9c543b
+
+	measure 'Reseller Sales' = CALCULATE ( [Total Sales], KEEPFILTERS ( Sales[Channel] = "Reseller" ) )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 3. Channel
+		lineageTag: ea9ac940-f3aa-4240-877b-626c4aab0083
+
+	measure 'Internet Sales %' = DIVIDE ( [Internet Sales], [Total Sales] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 3. Channel
+		lineageTag: 63e3605c-53a5-45cf-86d7-85204352c61b
+
+	measure 'Reseller Sales %' = DIVIDE ( [Reseller Sales], [Total Sales] )
+		formatString: 0.0%;-0.0%;0.0%
+		displayFolder: 3. Channel
+		lineageTag: c41bdc8b-c7e5-4b7f-9f6c-517b3691ab6f
+
+	measure 'Sales PY' = CALCULATE ( [Total Sales], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 4. Time Intelligence
+		lineageTag: 88dae29e-d8ac-4b8a-bcc5-1c259a4c9f81
+
+	measure 'Sales YoY' = IF ( NOT ISBLANK ( [Sales PY] ), [Total Sales] - [Sales PY] )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 4. Time Intelligence
+		lineageTag: 22992e5d-b25e-4729-a23a-3830e23674fa
+
+	measure 'Sales YoY %' = DIVIDE ( [Sales YoY], [Sales PY] )
+		formatString: ▲ 0.0%;▼ 0.0%;0.0%
+		displayFolder: 4. Time Intelligence
+		lineageTag: 5b5d4e92-191d-432d-884a-0b7ced75d8f0
+
+	measure 'Sales FYTD' = TOTALYTD ( [Total Sales], 'Date'[Date], "6/30" )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 4. Time Intelligence
+		lineageTag: 1218b784-7656-4a50-93d1-5c7f21168e70
+
+	measure 'Sales PY FYTD' = CALCULATE ( [Sales FYTD], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 4. Time Intelligence
+		lineageTag: b06942be-cf5d-4f46-b090-30698cbb0d1e
+
+	measure 'Sales FYTD YoY %' = DIVIDE ( [Sales FYTD] - [Sales PY FYTD], [Sales PY FYTD] )
+		formatString: ▲ 0.0%;▼ 0.0%;0.0%
+		displayFolder: 4. Time Intelligence
+		lineageTag: 070904fc-4f2b-49e6-9cc9-2900da096ead
+
+	measure 'Profit PY' = CALCULATE ( [Profit], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 4. Time Intelligence
+		lineageTag: fa8db76d-0507-47b8-9340-c6bc0ee89cf4
+
+	measure 'Profit YoY %' = DIVIDE ( [Profit] - [Profit PY], [Profit PY] )
+		formatString: ▲ 0.0%;▼ 0.0%;0.0%
+		displayFolder: 4. Time Intelligence
+		lineageTag: 3dda3755-155e-438e-b2f3-186f9b5213bd
+
+	measure 'Orders PY' = CALCULATE ( [Total Orders], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+		formatString: #,0
+		displayFolder: 4. Time Intelligence
+		lineageTag: aab7437d-3628-4ffc-bada-5fc2391b3a86
+
+	measure 'Orders YoY %' = DIVIDE ( [Total Orders] - [Orders PY], [Orders PY] )
+		formatString: ▲ 0.0%;▼ 0.0%;0.0%
+		displayFolder: 4. Time Intelligence
+		lineageTag: e98900f0-ff28-40b8-9387-8f67fe391de2
+
+	measure 'Sales Ship Date' = CALCULATE ( [Total Sales], USERELATIONSHIP ( Sales[ShipDateKey], 'Date'[DateKey] ) )
+		formatString: \$#,0;(\$#,0);\$#,0
+		displayFolder: 4. Time Intelligence
+		lineageTag: ef9a7b7a-2e07-48cd-b08d-2ecd82a30dd6
+
+	measure 'Customers PY' = CALCULATE ( [Customers], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+		formatString: #,0
+		displayFolder: 4. Time Intelligence
+		lineageTag: f7c8186f-eadf-4e5d-b9a6-459551be8da6
+
+	measure 'Customers YoY %' = DIVIDE ( [Customers] - [Customers PY], [Customers PY] )
+		formatString: ▲ 0.0%;▼ 0.0%;0.0%
+		displayFolder: 4. Time Intelligence
+		lineageTag: 9de30ff9-f0ad-46d2-8dc0-2d138dd2ad67
+
+	measure 'Reseller Sales Rank' =
+			IF (
+			    ISINSCOPE ( Reseller[Reseller] ),
+			    RANKX ( ALLSELECTED ( Reseller[Reseller] ), [Total Sales], , DESC, DENSE )
+			)
+		formatString: 0
+		displayFolder: 2. Customers & Products
+		lineageTag: aaf83d87-d360-449b-b2bf-ed057253155b
+
+	measure 'Selected Metric' = SELECTEDVALUE ( 'Metric Selector'[Metric], "Sales" )
+		displayFolder: 5. Metric Switch
+		lineageTag: 36d6eff1-ac07-4784-9a68-23ebb71c01e2
+
+	measure 'Metric Value' =
+			SWITCH (
+			    [Selected Metric],
+			    "Profit", [Profit],
+			    "Orders", [Total Orders],
+			    [Total Sales]
+			)
+		displayFolder: 5. Metric Switch
+		lineageTag: ce347624-3043-4d62-af49-5f8edea9d6c0
+
+		formatStringDefinition = IF ( [Selected Metric] = "Orders", "#,0", "$#,0" )
+
+	measure 'Metric Value PY' =
+			SWITCH (
+			    [Selected Metric],
+			    "Profit", [Profit PY],
+			    "Orders", [Orders PY],
+			    [Sales PY]
+			)
+		displayFolder: 5. Metric Switch
+		lineageTag: 9bd3e4f0-fced-4432-8b45-a26e0a0c51b1
+
+		formatStringDefinition = IF ( [Selected Metric] = "Orders", "#,0", "$#,0" )
+
+	measure 'Metric YoY %' = DIVIDE ( [Metric Value] - [Metric Value PY], [Metric Value PY] )
+		formatString: ▲ 0.0%;▼ 0.0%;0.0%
+		displayFolder: 5. Metric Switch
+		lineageTag: ede4735c-2e7b-48f5-86b7-9d8dcd11c9cc
+
+	measure 'Selected FY' = SELECTEDVALUE ( 'Date'[Fiscal Year], "All years" )
+		displayFolder: 6. Labels
+		lineageTag: f023b7d6-c8c7-465a-8b99-faa986d531d8
+
+	measure 'Previous FY' =
+			VAR fy = SELECTEDVALUE ( 'Date'[Fiscal Year] )
+			RETURN
+			    IF ( NOT ISBLANK ( fy ), "FY" & ( VALUE ( RIGHT ( fy, 4 ) ) - 1 ), "prior year" )
+		displayFolder: 6. Labels
+		lineageTag: 22a2436b-5beb-4548-aa9a-ad3ffa1bfc65
+
+	measure 'Trend Title' = [Selected Metric] & " by Month · " & [Selected FY] & " vs " & [Previous FY]
+		displayFolder: 6. Labels
+		lineageTag: 14e15ae4-4834-4291-9c46-f42e6d42eda6
+
+	measure 'Report Subtitle' =
+			VAR Regions =
+			    IF (
+			        ISFILTERED ( SalesTerritory[Group] ),
+			        CONCATENATEX ( VALUES ( SalesTerritory[Group] ), SalesTerritory[Group], ", " ),
+			        "All regions"
+			    )
+			VAR Channels =
+			    IF (
+			        ISFILTERED ( Sales[Channel] ),
+			        CONCATENATEX ( VALUES ( Sales[Channel] ), Sales[Channel], ", " ),
+			        "All channels"
+			    )
+			RETURN
+			    [Selected FY] & " · " & Regions & " · " & Channels & " · AdventureWorks Cycles"
+		displayFolder: 6. Labels
+		lineageTag: 959b16aa-92c7-4bc3-b6ca-add3408fc311
+
+	measure 'Best Month' = MAXX ( TOPN ( 1, VALUES ( 'Date'[Fiscal Month] ), [Total Sales] ), 'Date'[Fiscal Month] )
+		displayFolder: 7. Insights
+		lineageTag: 7d781973-678c-40fd-964d-f3657ccb030f
+
+	measure 'Sales Direction' = IF ( [Sales YoY %] >= 0, "up", "down" )
+		displayFolder: 7. Insights
+		lineageTag: 9d31d4d8-9a54-419b-82b5-58c481b4274c
+
+	measure 'Sales YoY Abs %' = ABS ( [Sales YoY %] )
+		formatString: 0.0%
+		displayFolder: 7. Insights
+		lineageTag: ab5d9dac-f1f0-4b95-ac4c-05a0fe5e3ad3
+
+	measure 'Top Category' = MAXX ( TOPN ( 1, VALUES ( Product[Category] ), [Total Sales] ), Product[Category] )
+		displayFolder: 7. Insights
+		lineageTag: deac906d-101f-4ed9-8b67-877e668b8084
+
+	measure 'Top Category Share' =
+			VAR TopCat = [Top Category]
+			RETURN
+			    DIVIDE (
+			        CALCULATE ( [Total Sales], Product[Category] = TopCat ),
+			        CALCULATE ( [Total Sales], ALL ( Product[Category] ) )
+			    )
+		formatString: 0.0%
+		displayFolder: 7. Insights
+		lineageTag: e76b6a2b-9b7a-49e5-8c34-80400e6ec932
+
+	measure 'Best Margin Category' = MAXX ( TOPN ( 1, VALUES ( Product[Category] ), [Profit Margin %] ), Product[Category] )
+		displayFolder: 7. Insights
+		lineageTag: a93165c8-3cff-4e27-90dc-430940e26d38
+
+	measure 'Best Margin %' =
+			VAR BestCat = [Best Margin Category]
+			RETURN
+			    CALCULATE ( [Profit Margin %], Product[Category] = BestCat )
+		formatString: 0.0%
+		displayFolder: 7. Insights
+		lineageTag: 806678fd-3b6d-4f41-8c41-da4411cbd9d5
+
+	measure 'Top Country' = MAXX ( TOPN ( 1, VALUES ( SalesTerritory[Country] ), [Total Sales] ), SalesTerritory[Country] )
+		displayFolder: 7. Insights
+		lineageTag: d5350e75-d288-41ff-884a-b3d82cd231cc
+
+	measure 'Top Country Share' =
+			VAR TopCountry = [Top Country]
+			RETURN
+			    DIVIDE (
+			        CALCULATE ( [Total Sales], SalesTerritory[Country] = TopCountry ),
+			        CALCULATE ( [Total Sales], ALL ( SalesTerritory[Country] ) )
+			    )
+		formatString: 0.0%
+		displayFolder: 7. Insights
+		lineageTag: 0688415e-0f5f-4718-959b-a1f09be93975
+
+	measure 'Fastest Country' =
+			MAXX (
+			    TOPN (
+			        1,
+			        FILTER ( VALUES ( SalesTerritory[Country] ), NOT ISBLANK ( [Sales PY] ) ),
+			        [Sales YoY %]
+			    ),
+			    SalesTerritory[Country]
+			)
+		displayFolder: 7. Insights
+		lineageTag: c63cd5ce-a9cd-4bf6-8efb-ec9eaadec8b7
+
+	measure 'Fastest Country Growth' =
+			VAR c = [Fastest Country]
+			RETURN
+			    CALCULATE ( [Sales YoY %], SalesTerritory[Country] = c )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 7. Insights
+		lineageTag: 0e7d5725-da61-4d1b-90ae-d9925d6093c4
+
+	measure 'Weakest Subcategory' =
+			MINX (
+			    TOPN (
+			        1,
+			        FILTER ( VALUES ( Product[Subcategory] ), NOT ISBLANK ( [Sales PY] ) && NOT ISBLANK ( [Total Sales] ) ),
+			        [Sales YoY %], ASC
+			    ),
+			    Product[Subcategory]
+			)
+		displayFolder: 7. Insights
+		lineageTag: 23f10cfe-f513-4003-9a65-ddbc0986c41c
+
+	measure 'Weakest Subcategory Change' =
+			VAR s = [Weakest Subcategory]
+			RETURN
+			    CALCULATE ( [Sales YoY %], Product[Subcategory] = s )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 7. Insights
+		lineageTag: 24f02245-a3f7-40bb-adb1-c320d946ee38
+
+	measure 'KPI Sales Value' = FORMAT ( [Total Sales] / 1000000, "$#,0.00" ) & "M"
+		displayFolder: 8. Display
+		lineageTag: 04ad1729-0399-45ee-acda-c44e394bde2e
+
+	measure 'KPI Profit Value' = FORMAT ( [Profit] / 1000000, "$#,0.00" ) & "M"
+		displayFolder: 8. Display
+		lineageTag: 92bca578-c9bf-465f-9f41-995fc1f0ee9d
+
+	measure 'KPI Orders Value' = FORMAT ( [Total Orders], "#,0" )
+		displayFolder: 8. Display
+		lineageTag: a7dd24d2-1e57-49a8-b098-ab3b186a6c77
+
+	measure 'KPI Customers Value' = FORMAT ( [Customers], "#,0" )
+		displayFolder: 8. Display
+		lineageTag: 77b1714d-5df3-4a21-90b7-25e3f0169bbc
+
+	measure 'KPI Sales Badge' = IF ( ISBLANK ( [Sales YoY %] ), "n/a", FORMAT ( [Sales YoY %], "▲ 0.0%;▼ 0.0%;0.0%" ) )
+		displayFolder: 8. Display
+		lineageTag: 035ed80e-9947-412c-995d-36c51171da9c
+
+	measure 'KPI Profit Badge' = IF ( ISBLANK ( [Profit YoY %] ), "n/a", FORMAT ( [Profit YoY %], "▲ 0.0%;▼ 0.0%;0.0%" ) )
+		displayFolder: 8. Display
+		lineageTag: d8dc2b7a-017f-4a01-b607-42bf2cb31abd
+
+	measure 'KPI Orders Badge' = IF ( ISBLANK ( [Orders YoY %] ), "n/a", FORMAT ( [Orders YoY %], "▲ 0.0%;▼ 0.0%;0.0%" ) )
+		displayFolder: 8. Display
+		lineageTag: d50dc2d4-5c9e-4631-928a-a2081fc0a8ec
+
+	measure 'KPI Customers Badge' = IF ( ISBLANK ( [Customers YoY %] ), "n/a", FORMAT ( [Customers YoY %], "▲ 0.0%;▼ 0.0%;0.0%" ) )
+		displayFolder: 8. Display
+		lineageTag: d60a1c73-76ad-4c22-ba9e-3ca16d0cbd43
+
+	measure 'KPI Sales Badge Color' = IF ( [Sales YoY %] < 0, "#C23B32", "#12805C" )
+		displayFolder: 8. Display
+		lineageTag: 5dac19c2-5ab1-44bf-bc9c-30ba8d6ce4d2
+
+	measure 'KPI Profit Badge Color' = IF ( [Profit YoY %] < 0, "#C23B32", "#12805C" )
+		displayFolder: 8. Display
+		lineageTag: 3f31355d-98ca-4751-a54b-135b3e04d263
+
+	measure 'KPI Orders Badge Color' = IF ( [Orders YoY %] < 0, "#C23B32", "#12805C" )
+		displayFolder: 8. Display
+		lineageTag: cfe0985d-70b5-42dd-a816-970d54c8c559
+
+	measure 'KPI Customers Badge Color' = IF ( [Customers YoY %] < 0, "#C23B32", "#12805C" )
+		displayFolder: 8. Display
+		lineageTag: b86ea22b-f3a1-4b36-a90a-b71bab3bdf77
+
+	measure 'KPI Sales Badge Fill' = IF ( [Sales YoY %] < 0, "#FDE8E7", "#E3F4EC" )
+		displayFolder: 8. Display
+		lineageTag: 1b36d2bd-a2a5-43d5-bf8f-50ff1aef57b9
+
+	measure 'KPI Profit Badge Fill' = IF ( [Profit YoY %] < 0, "#FDE8E7", "#E3F4EC" )
+		displayFolder: 8. Display
+		lineageTag: a9372527-e982-47c4-baaf-ff275c3f9382
+
+	measure 'KPI Orders Badge Fill' = IF ( [Orders YoY %] < 0, "#FDE8E7", "#E3F4EC" )
+		displayFolder: 8. Display
+		lineageTag: f6918cf0-620d-413f-8dce-190374c85cc7
+
+	measure 'KPI Customers Badge Fill' = IF ( [Customers YoY %] < 0, "#FDE8E7", "#E3F4EC" )
+		displayFolder: 8. Display
+		lineageTag: 9205ce8f-5927-4215-be00-596f898bab6f
+
+	measure 'KPI Profit Detail' = "margin " & FORMAT ( [Profit Margin %], "0.0%" )
+		displayFolder: 8. Display
+		lineageTag: 4d5f774f-d791-4ccb-8567-bd03575c91d9
+
+	measure 'KPI Orders Detail' = "AOV " & FORMAT ( [Avg Order Value], "$#,0" )
+		displayFolder: 8. Display
+		lineageTag: bdacd985-0cf1-4928-bb54-fd3f0f2da502
+
+	measure 'KPI Customers Detail' = FORMAT ( [Active Resellers], "#,0" ) & " resellers"
+		displayFolder: 8. Display
+		lineageTag: ee928254-22de-4ae5-8232-98eb0750ac73
+
+	measure 'Insight 1 Text' =
+			VAR SalesM = FORMAT ( [Total Sales] / 1000000, "$#,0.0" ) & "M"
+			RETURN
+			    IF (
+			        ISBLANK ( [Sales PY] ),
+			        "Total sales reached " & SalesM & ". The strongest month was " & [Best Month] & ".",
+			        "Sales are " & [Sales Direction] & " " & FORMAT ( [Sales YoY Abs %], "0.0%" )
+			            & " on last year, reaching " & SalesM & ". The strongest month was " & [Best Month] & "."
+			    )
+		displayFolder: 8. Display
+		lineageTag: 5fa7e23c-8b09-4706-a2c2-7495f65bc925
+
+	measure 'Insight 2 Text' =
+			[Top Category] & " drives " & FORMAT ( [Top Category Share], "0%" ) & " of revenue, while "
+			    & [Best Margin Category] & " has the best margin at " & FORMAT ( [Best Margin %], "0.0%" ) & "."
+		displayFolder: 8. Display
+		lineageTag: 2e935501-33f4-49da-81a6-6bf312aba868
+
+	measure 'Insight 3 Text' =
+			[Top Country] & " is the largest market with " & FORMAT ( [Top Country Share], "0%" ) & " of sales"
+			    & IF (
+			        ISBLANK ( [Fastest Country] ),
+			        ".",
+			        "; " & [Fastest Country] & " grew fastest at " & FORMAT ( [Fastest Country Growth], "+0.0%;-0.0%;0.0%" ) & "."
+			    )
+		displayFolder: 8. Display
+		lineageTag: 452b2381-641d-44d1-bcce-a94207a07aa9
+
+	measure 'Insight 4 Text' =
+			IF (
+			    ISBLANK ( [Weakest Subcategory] ),
+			    "Pick a fiscal year that has a prior year to see what to watch.",
+			    "Watch: " & [Weakest Subcategory] & " sales changed "
+			        & FORMAT ( [Weakest Subcategory Change], "+0.0%;-0.0%;0.0%" ) & " year on year."
+			)
+		displayFolder: 8. Display
+		lineageTag: a0ece0dc-21fa-424e-8139-95b2652b181d
+
+	column SalesOrderLineKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 72018eef-62c0-4a80-930b-ee0c3ab85979
+		summarizeBy: none
+		sourceColumn: SalesOrderLineKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ResellerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 6bb60321-2b7e-46a2-845c-417717fe219e
+		summarizeBy: none
+		sourceColumn: ResellerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 73e5331c-426c-4fda-85f7-3ad0d26b675b
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ed580669-142a-40cc-b379-5700c6ada7e8
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: bc72512d-fd76-4687-b467-aa73397b2a5e
+		summarizeBy: count
+		sourceColumn: OrderDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column DueDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 2eb15db6-f31b-4bfe-9374-b1695bca81d4
+		summarizeBy: count
+		sourceColumn: DueDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShipDateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 54d03227-77dc-4c9e-a436-a33056ddbb1e
+		summarizeBy: count
+		sourceColumn: ShipDateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesTerritoryKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 2ef41b03-27e4-4404-af38-1afa07bc1e85
+		summarizeBy: none
+		sourceColumn: SalesTerritoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Order Quantity'
+		dataType: int64
+		formatString: 0
+		lineageTag: d7ddb297-7b64-45fb-b517-979255bb4dff
+		summarizeBy: sum
+		sourceColumn: Order Quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Unit Price'
+		dataType: double
+		lineageTag: 64ad6907-c3d5-43fa-af44-e79145853181
+		summarizeBy: sum
+		sourceColumn: Unit Price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Extended Amount'
+		dataType: double
+		lineageTag: 44e686ca-43af-4f7c-8de7-9e49d4b073ab
+		summarizeBy: sum
+		sourceColumn: Extended Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Unit Price Discount Pct'
+		dataType: int64
+		formatString: 0
+		lineageTag: 5de4cbb2-0209-4d05-8471-bc4202c8eec9
+		summarizeBy: sum
+		sourceColumn: Unit Price Discount Pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Product Standard Cost'
+		dataType: double
+		lineageTag: 1729c904-489a-44ac-936f-cce3ef2a0fe3
+		summarizeBy: sum
+		sourceColumn: Product Standard Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Total Product Cost'
+		dataType: double
+		lineageTag: 66ddc43f-cb4e-48b3-8644-78d8f1b43461
+		summarizeBy: sum
+		sourceColumn: Total Product Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Sales Amount'
+		dataType: double
+		lineageTag: c7fba62b-5913-43d6-bc53-73cdefff30d6
+		summarizeBy: sum
+		sourceColumn: Sales Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Channel = IF ( Sales[ResellerKey] = -1, "Internet", "Reseller" )
+		dataType: string
+		lineageTag: 8bb279ff-0406-44f5-abc9-53d9e2ca74e6
+		summarizeBy: none
+
+	column 'Sales Order' = "SO" & INT ( Sales[SalesOrderLineKey] / 1000 )
+		dataType: string
+		lineageTag: 821801e3-00cc-40ba-9737-1940fbbafd02
+		summarizeBy: none
+
+	partition Sales = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\USER\Downloads\AdventureWorks Sales 3.xlsx"), null, true),
+				    Sales_Table = Source{[Item="Sales",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Sales_Table,{{"SalesOrderLineKey", Int64.Type}, {"ResellerKey", Int64.Type}, {"CustomerKey", Int64.Type}, {"ProductKey", Int64.Type}, {"OrderDateKey", Int64.Type}, {"DueDateKey", Int64.Type}, {"ShipDateKey", Int64.Type}, {"SalesTerritoryKey", Int64.Type}, {"Order Quantity", Int64.Type}, {"Unit Price", type number}, {"Extended Amount", type number}, {"Unit Price Discount Pct", Int64.Type}, {"Product Standard Cost", type number}, {"Total Product Cost", type number}, {"Sales Amount", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

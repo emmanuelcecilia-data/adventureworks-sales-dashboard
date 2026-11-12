@@ -1,0 +1,142 @@
+table Date
+	lineageTag: eaa5c6ab-f559-4905-b205-d11ea54f3f50
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 88e625b1-796f-4f4f-b158-5e152109beeb
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: d mmm yyyy
+		lineageTag: 463298cc-9932-465f-930e-88890570afb6
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Fiscal Year'
+		dataType: string
+		lineageTag: 9f30cbc3-c1e4-4aa8-ad1d-18de51f5b4e8
+		summarizeBy: none
+		sourceColumn: Fiscal Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fiscal Quarter'
+		dataType: string
+		lineageTag: c88dde70-dcc7-4203-bfdc-3d9b1a9b86d9
+		summarizeBy: none
+		sourceColumn: Fiscal Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: string
+		lineageTag: 03107bdb-cf3c-468b-ba23-0047f3ec4984
+		summarizeBy: none
+		sourceColumn: Month
+		sortByColumn: MonthKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Full Date'
+		dataType: string
+		lineageTag: a5565c04-00f6-436a-b347-c7b5434532a9
+		summarizeBy: none
+		sourceColumn: Full Date
+		sortByColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 51fa1484-446b-4653-8f9d-0ff2e558cf02
+		summarizeBy: none
+		sourceColumn: MonthKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 6588aaab-53d1-4d6d-be44-164e9e5b3658
+		summarizeBy: none
+		sourceColumn: Year
+
+	column 'Month Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: fab561e9-9b53-4ed7-b11c-4fa9859e8139
+		summarizeBy: none
+		sourceColumn: Month Number
+
+	column 'Month Name'
+		dataType: string
+		lineageTag: baf6c9e1-7bed-4948-a3ea-34a62300eeac
+		summarizeBy: none
+		sourceColumn: Month Name
+		sortByColumn: 'Month Number'
+
+	column 'Fiscal Month Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c662e191-3863-4df3-9d53-af661ef46513
+		summarizeBy: none
+		sourceColumn: Fiscal Month Number
+
+	column 'Fiscal Month'
+		dataType: string
+		lineageTag: d0c3df14-d1d9-4322-856f-2a93e1b8322c
+		summarizeBy: none
+		sourceColumn: Fiscal Month
+		sortByColumn: 'Fiscal Month Number'
+
+	column 'Day of Week Number'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4b2b1444-5876-4f0d-a84f-0818e2ae0420
+		summarizeBy: none
+		sourceColumn: Day of Week Number
+
+	column 'Day of Week'
+		dataType: string
+		lineageTag: 0a655e54-4ee3-4ca0-9e8f-2feb0a7aad57
+		summarizeBy: none
+		sourceColumn: Day of Week
+		sortByColumn: 'Day of Week Number'
+
+	partition Date = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\USER\Downloads\AdventureWorks Sales 3.xlsx"), null, true),
+				    Date_Table = Source{[Item="Date",Kind="Table"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Date_Table,{{"DateKey", Int64.Type}, {"Date", type date}, {"Fiscal Year", type text}, {"Fiscal Quarter", type text}, {"Month", type text}, {"Full Date", type text}, {"MonthKey", Int64.Type}}),
+				    #"Added Year" = Table.AddColumn(#"Changed Type", "Year", each Date.Year([Date]), Int64.Type),
+				    #"Added Month Number" = Table.AddColumn(#"Added Year", "Month Number", each Date.Month([Date]), Int64.Type),
+				    #"Added Month Name" = Table.AddColumn(#"Added Month Number", "Month Name", each Date.ToText([Date], "MMM", "en-US"), type text),
+				    #"Added Fiscal Month Number" = Table.AddColumn(#"Added Month Name", "Fiscal Month Number", each Number.Mod(Date.Month([Date]) + 5, 12) + 1, Int64.Type),
+				    #"Added Day of Week Number" = Table.AddColumn(#"Added Fiscal Month Number", "Day of Week Number", each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type),
+				    #"Added Day of Week" = Table.AddColumn(#"Added Day of Week Number", "Day of Week", each Date.ToText([Date], "ddd", "en-US"), type text),
+				    #"Added Fiscal Month" = Table.AddColumn(#"Added Day of Week", "Fiscal Month", each Date.ToText([Date], "MMM", "en-US"), type text),
+				    #"Kept Sales Years" = Table.SelectRows(#"Added Fiscal Month", each [Date] <= #date(2020, 6, 30))
+				in
+				    #"Kept Sales Years"
+
+	annotation PBI_ResultType = Table
+

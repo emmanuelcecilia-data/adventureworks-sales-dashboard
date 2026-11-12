@@ -1,0 +1,22 @@
+table 'Metric Selector'
+	lineageTag: a1ceda44-4a5c-4954-9ca4-6f569bde24c0
+
+	column Metric
+		dataType: string
+		lineageTag: 13d86c3e-747c-4e86-8aea-852486b0470d
+		summarizeBy: none
+		sourceColumn: [Metric]
+		sortByColumn: 'Metric Order'
+
+	column 'Metric Order'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 47e9d04f-c736-42f3-ba42-ecb263b96065
+		summarizeBy: none
+		sourceColumn: [Metric Order]
+
+	partition 'Metric Selector' = calculated
+		mode: import
+		source = DATATABLE ( "Metric", STRING, "Metric Order", INTEGER, { { "Sales", 1 }, { "Profit", 2 }, { "Orders", 3 } } )
+

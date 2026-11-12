@@ -1,0 +1,145 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "Fluent2-CY26SU10",
+      "reportVersionAtImport": {
+        "visual": "2.14.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "AdventureWorks_Dark_Green1794499028142.json",
+      "reportVersionAtImport": {
+        "visual": "2.14.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "RegisteredResources"
+    }
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "visible": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "Fluent2-CY26SU10",
+          "path": "BaseThemes/Fluent2-CY26SU10.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "AdventureWorks_Dark_Green1794499028142.json",
+          "path": "AdventureWorks_Dark_Green1794499028142.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "icon_bulb.svg",
+          "path": "icon_bulb.svg",
+          "type": "Image"
+        },
+        {
+          "name": "icon_ins_box.svg",
+          "path": "icon_ins_box.svg",
+          "type": "Image"
+        },
+        {
+          "name": "icon_ins_globe.svg",
+          "path": "icon_ins_globe.svg",
+          "type": "Image"
+        },
+        {
+          "name": "icon_ins_trend.svg",
+          "path": "icon_ins_trend.svg",
+          "type": "Image"
+        },
+        {
+          "name": "icon_ins_warn.svg",
+          "path": "icon_ins_warn.svg",
+          "type": "Image"
+        },
+        {
+          "name": "icon_logo.svg",
+          "path": "icon_logo.svg",
+          "type": "Image"
+        },
+        {
+          "name": "icon_nav_customers.svg",
+          "path": "icon_nav_customers.svg",
+          "type": "Image"
+        },
+        {
+          "name": "icon_nav_geography.svg",
+          "path": "icon_nav_geography.svg",
+          "type": "Image"
+        },
+        {
+          "name": "icon_nav_overview.svg",
+          "path": "icon_nav_overview.svg",
+          "type": "Image"
+        },
+        {
+          "name": "icon_nav_products.svg",
+          "path": "icon_nav_products.svg",
+          "type": "Image"
+        },
+        {
+          "name": "icon_nav_resellers.svg",
+          "path": "icon_nav_resellers.svg",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true
+  }
+}

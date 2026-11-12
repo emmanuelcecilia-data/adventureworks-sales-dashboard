@@ -1,0 +1,4 @@
+# Power BI local/cache files (not needed in the repo)
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+*.pbix.bak
