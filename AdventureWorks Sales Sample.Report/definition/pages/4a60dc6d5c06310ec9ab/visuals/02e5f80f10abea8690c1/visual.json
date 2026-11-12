@@ -82,13 +82,13 @@
         "sort": [
           {
             "field": {
-              "Column": {
+              "Measure": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Reseller"
+                    "Entity": "Sales"
                   }
                 },
-                "Property": "Reseller"
+                "Property": "Total Sales"
               }
             },
             "direction": "Descending"

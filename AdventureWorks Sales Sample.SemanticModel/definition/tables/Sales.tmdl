@@ -90,7 +90,7 @@ table Sales
 		displayFolder: 3. Channel
 		lineageTag: c41bdc8b-c7e5-4b7f-9f6c-517b3691ab6f
 
-	measure 'Sales PY' = CALCULATE ( [Total Sales], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+	measure 'Sales PY' = IF ( HASONEVALUE ( 'Date'[Fiscal Year] ), CALCULATE ( [Total Sales], SAMEPERIODLASTYEAR ( 'Date'[Date] ) ) )
 		formatString: \$#,0;(\$#,0);\$#,0
 		displayFolder: 4. Time Intelligence
 		lineageTag: 88dae29e-d8ac-4b8a-bcc5-1c259a4c9f81
@@ -120,7 +120,7 @@ table Sales
 		displayFolder: 4. Time Intelligence
 		lineageTag: 070904fc-4f2b-49e6-9cc9-2900da096ead
 
-	measure 'Profit PY' = CALCULATE ( [Profit], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+	measure 'Profit PY' = IF ( HASONEVALUE ( 'Date'[Fiscal Year] ), CALCULATE ( [Profit], SAMEPERIODLASTYEAR ( 'Date'[Date] ) ) )
 		formatString: \$#,0;(\$#,0);\$#,0
 		displayFolder: 4. Time Intelligence
 		lineageTag: fa8db76d-0507-47b8-9340-c6bc0ee89cf4
@@ -130,7 +130,7 @@ table Sales
 		displayFolder: 4. Time Intelligence
 		lineageTag: 3dda3755-155e-438e-b2f3-186f9b5213bd
 
-	measure 'Orders PY' = CALCULATE ( [Total Orders], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+	measure 'Orders PY' = IF ( HASONEVALUE ( 'Date'[Fiscal Year] ), CALCULATE ( [Total Orders], SAMEPERIODLASTYEAR ( 'Date'[Date] ) ) )
 		formatString: #,0
 		displayFolder: 4. Time Intelligence
 		lineageTag: aab7437d-3628-4ffc-bada-5fc2391b3a86
@@ -145,7 +145,7 @@ table Sales
 		displayFolder: 4. Time Intelligence
 		lineageTag: ef9a7b7a-2e07-48cd-b08d-2ecd82a30dd6
 
-	measure 'Customers PY' = CALCULATE ( [Customers], SAMEPERIODLASTYEAR ( 'Date'[Date] ) )
+	measure 'Customers PY' = IF ( HASONEVALUE ( 'Date'[Fiscal Year] ), CALCULATE ( [Customers], SAMEPERIODLASTYEAR ( 'Date'[Date] ) ) )
 		formatString: #,0
 		displayFolder: 4. Time Intelligence
 		lineageTag: f7c8186f-eadf-4e5d-b9a6-459551be8da6
@@ -208,7 +208,7 @@ table Sales
 		displayFolder: 6. Labels
 		lineageTag: 22a2436b-5beb-4548-aa9a-ad3ffa1bfc65
 
-	measure 'Trend Title' = [Selected Metric] & " by Month · " & [Selected FY] & " vs " & [Previous FY]
+	measure 'Trend Title' = [Selected Metric] & " by Month · " & IF ( HASONEVALUE ( 'Date'[Fiscal Year] ), [Selected FY] & " vs " & [Previous FY], "All years" )
 		displayFolder: 6. Labels
 		lineageTag: 14e15ae4-4834-4291-9c46-f42e6d42eda6
 

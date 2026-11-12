@@ -94,7 +94,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "11D"
+                  "Value": "10D"
                 }
               }
             },
@@ -126,14 +126,14 @@
             "preferredCategoryWidth": {
               "expr": {
                 "Literal": {
-                  "Value": "17D"
+                  "Value": "11D"
                 }
               }
             },
             "innerPadding": {
               "expr": {
                 "Literal": {
-                  "Value": "25D"
+                  "Value": "20D"
                 }
               }
             }
@@ -250,7 +250,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "11D"
+                  "Value": "10D"
                 }
               }
             },
@@ -515,7 +515,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Top 15 Subcategories'"
+                  "Value": "'Top 12 Subcategories'"
                 }
               }
             },
@@ -642,14 +642,14 @@
             "top": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "8D"
                 }
               }
             },
             "bottom": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "6D"
                 }
               }
             },
@@ -837,7 +837,7 @@
                         }
                       }
                     ],
-                    "Top": 15
+                    "Top": 12
                   }
                 }
               },
