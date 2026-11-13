@@ -414,8 +414,8 @@ table Sales
 		lineageTag: 5fa7e23c-8b09-4706-a2c2-7495f65bc925
 
 	measure 'Insight 2 Text' =
-			[Top Category] & " drives " & FORMAT ( [Top Category Share], "0%" ) & " of revenue, while "
-			    & [Best Margin Category] & " has the best margin at " & FORMAT ( [Best Margin %], "0.0%" ) & "."
+			[Top Category] & " bring in " & FORMAT ( [Top Category Share], "0%" ) & " of revenue, while "
+			    & [Best Margin Category] & " earn the best margin at " & FORMAT ( [Best Margin %], "0.0%" ) & "."
 		displayFolder: 8. Display
 		lineageTag: 2e935501-33f4-49da-81a6-6bf312aba868
 
@@ -433,8 +433,11 @@ table Sales
 			IF (
 			    ISBLANK ( [Weakest Subcategory] ),
 			    "Pick a fiscal year that has a prior year to see what to watch.",
-			    "Watch: " & [Weakest Subcategory] & " sales changed "
-			        & FORMAT ( [Weakest Subcategory Change], "+0.0%;-0.0%;0.0%" ) & " year on year."
+			    IF (
+			        [Weakest Subcategory Change] < 0,
+			        "Watch: " & [Weakest Subcategory] & " sales fell " & FORMAT ( ABS ( [Weakest Subcategory Change] ), "0.0%" ) & " year on year.",
+			        "Slowest grower: " & [Weakest Subcategory] & ", up " & FORMAT ( [Weakest Subcategory Change], "0.0%" ) & " year on year."
+			    )
 			)
 		displayFolder: 8. Display
 		lineageTag: a0ece0dc-21fa-424e-8139-95b2652b181d

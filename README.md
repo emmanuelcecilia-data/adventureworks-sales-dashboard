@@ -20,7 +20,8 @@ An executive sales dashboard that **explains itself**: alongside the KPIs and ch
 | **One-click metric switch** | Disconnected `Metric Selector` table + `SWITCH` measures with a **dynamic format string** |
 | **Fiscal-year time intelligence** | Marked Date table (fiscal year starts 1 July), `SAMEPERIODLASTYEAR`, `TOTALYTD(..., "6/30")` |
 | **KPI cards with sparklines and ▲▼ badges** | Measure-driven text and colours layered with area-chart sparklines |
-| **Dynamic titles** | Chart titles and the page subtitle follow the selected year, metric, region and channel |
+| **Dynamic titles** | Chart titles and the page subtitle follow the selected fiscal year and metric |
+| **Honest comparisons** | "vs last year" figures only appear when a single fiscal year is selected — no misleading all-years percentages |
 | **Designed before built** | Mockup → pixel grid (1920×1080, 20 px gutters) → custom theme JSON → build |
 
 ## Key findings (FY2020 vs FY2019)
@@ -67,6 +68,9 @@ RETURN
         CALCULATE ( [Total Sales], ALL ( Product[Category] ) )
     )
 ```
+
+## Roadmap
+Page 1 (**Overview**) is complete. The navigation rail already lists the next pages — **Products, Customers, Geography and Resellers** — which are in progress.
 
 ## Tools
 Power BI Desktop (PBIP project format) · DAX · Power Query (M) · custom report theme (JSON)
